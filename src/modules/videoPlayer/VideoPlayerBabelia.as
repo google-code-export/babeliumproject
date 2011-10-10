@@ -498,8 +498,9 @@ package modules.videoPlayer
 			_micActivityBar.y=_videoBarPanel.y - y2 - _micActivityBar.height;
 		
 			
-			_subtitleBox.y=0;
+			
 			_subtitleBox.resize(_videoWidth, _videoHeight*0.75);
+			_subtitleBox.y=0;
 
 			// Resize arrowPanel
 			_arrowPanel.resize(_sBar.width, _arrowContainer.height - 8);
