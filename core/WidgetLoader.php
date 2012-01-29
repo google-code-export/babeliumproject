@@ -6,6 +6,10 @@ require_once(dirname(__FILE__) . "/../config/Config.php");
 /**
  * Widgets
  */
+require_once(dirname(__FILE__) . "/../widgets/config/WConfigurationTabBar.php");
+require_once(dirname(__FILE__) . "/../widgets/config/WMicTester.php");
+require_once(dirname(__FILE__) . "/../widgets/config/WWebcamTester.php");
+
 require_once(dirname(__FILE__) . "/../widgets/evaluation/WEvaluationTabBar.php");
 require_once(dirname(__FILE__) . "/../widgets/evaluation/WEvaluationDataTable.php");
 
@@ -56,7 +60,10 @@ final class WidgetLoader
 		"VideoList" => "WVideoList",
 		"Unauthorized" => "WUnauthorized",
 		"EvaluationTabBar" => "WEvaluationTabBar",
-		"EvaluationDataTable" => "WEvaluationDataTable"
+		"EvaluationDataTable" => "WEvaluationDataTable",
+		"ConfigurationTabBar" => "WConfigurationTabBar",
+		"MicTester" => "WMicTester",
+		"WebcamTester" => "WWebcamTester"
 	);
 	
 	/* Constructor */
