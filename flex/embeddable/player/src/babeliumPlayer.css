@@ -1,0 +1,36 @@
+/* Application main stylesheet */
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace common "view.common.*";
+
+/* Styles applied by default on specified components */
+
+s|Application{
+	verticalAlign: top;
+	verticalGap: 0;
+	horizontalAlign: center;
+	paddingTop: 0;
+	paddingBottom: 5;
+	fontFamily: Arial;
+	fontSize: 12;
+	fontWeight: normal;
+	color: #000000;
+}
+
+s|Label{
+	fontWeight: normal;
+}
+
+s|Button{
+	paddingLeft: 6;
+	paddingRight: 6;
+	cornerRadius: 8;
+}
+
+.bigBlueButton{
+	cornerRadius: 10;
+	fontSize: 14;
+	fontWeight: bold;
+	color: #ffffff;
+	skinClass: ClassReference('skins.ActionButtonSkin');
+}

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:videoPlayer="modules.videoPlayer.*"
+			   xmlns:control="control.*"
+			   preinitialize="init()"
+			   creationComplete="complete()">
+	
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Metadata>
+		[ResourceBundle("myResources")]
+	</fx:Metadata> 
+	
+	<fx:Style source="babeliumPlayer.css"/>
+	
+	<fx:Declarations>
+		<control:Extern/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import model.DataModel;
+			
+			import modules.videoPlayer.events.VideoPlayerEvent;
+			
+			import mx.core.FlexGlobals;
+			import mx.resources.Locale;
+			import mx.resources.ResourceManager;
+			import mx.utils.ObjectUtil;
+			
+			private var videoId:String=null;
+			private var explicit_locale:String=null;
+			
+			[Bindable] private var app:Object = FlexGlobals.topLevelApplication;
+			
+			[Bindable] private var appWidth:uint;
+			[Bindable] private var appHeight:uint;
+			
+			private function init():void
+			{
+				//http://stackoverflow.com/questions/452415/how-to-make-cross-domain-communication-between-javascript-and-flash
+				Security.allowDomain("*");
+				appWidth=FlexGlobals.topLevelApplication.width;
+				appHeight=FlexGlobals.topLevelApplication.height;
+				videoId=FlexGlobals.topLevelApplication.parameters.videoId;
+				explicit_locale=FlexGlobals.topLevelApplication.parameters.locale;
+				explicit_locale=parseLocale(explicit_locale);
+				if(explicit_locale){
+					ResourceManager.getInstance().localeChain=[explicit_locale];
+				}
+			}
+			
+			private function complete():void
+			{
+				VP.addEventListener(VideoPlayerEvent.CONNECTED, onConnect);
+				VP.stopVideo();
+				VP.state=VideoPlayerBabelia.PLAY_STATE;
+				
+				//videoId=FlexGlobals.topLevelApplication.parameters.videoId;
+				
+				if (videoId != null)
+					VP.videoSource=DataModel.getInstance().exerciseStreamsFolder + "/" + videoId;
+				
+				// Setups javascripts external controls
+				Extern.getInstance().setup(VP);	
+			}
+			
+			private function parseLocale(locale:String):String{
+				var parsed_locale:String=null;
+				var language:String=null;
+				var country:String=null;
+				var available_languages:Array;
+				if(locale){
+					available_languages = ResourceManager.getInstance().getLocales();
+					var parts:Array = locale.split("_");
+					if (parts.length > 0){
+						language = parts[0];
+						if (parts.length > 1)
+							country = (parts[1] as String).toUpperCase();
+						for each (var l:String in available_languages){
+							var lparts:Array = l.split("_");
+							if(country){
+								if(lparts[0] == language && lparts[1] == country){
+									parsed_locale = l;
+									break;
+								}
+							} else{
+								if(lparts[0] == language){
+									parsed_locale = l;
+									break;
+								}
+							}
+						}
+					}	
+				}
+				return parsed_locale;
+			}
+			
+			private function onConnect(e:Event):void
+			{
+				Extern.getInstance().onConnectionReady();
+			}
+			
+			private function set onUpdateVPHeight(height:int):void
+			{
+				trace("VP Height: "+VP.height);
+				Extern.getInstance().resizeHeight(height);
+			}
+			
+			private function set onUpdateVPWidth(width:int):void
+			{
+				trace("VP Width: "+VP.width);
+				Extern.getInstance().resizeWidth(width);
+			}
+		]]>
+	</fx:Script>
+	<fx:Binding source="{VP.height}"
+				destination="this.onUpdateVPHeight"/>
+	<fx:Binding source="{VP.width}"
+				destination="this.onUpdateVPWidth"/>
+
+	<videoPlayer:VideoPlayerBabelia id="VP"
+									autoPlay="true"
+									skin="white"
+									seek="true"
+									subtitles="true"
+									autoScale="false"
+									arrows="false"
+									width="{appWidth}"
+									height="{appHeight-20}"
+									subtitlingControls="false"
+									streamSource="{DataModel.getInstance().streamingResourcesPath}"
+									controlsEnabled="true"/>
+	
+	
+
+	
+</s:Application>
